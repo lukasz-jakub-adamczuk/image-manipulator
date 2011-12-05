@@ -75,6 +75,7 @@ class ImageManipulator {
 		
 	}
 	
+<<<<<<< HEAD
 	public function resize($iWidth, $iHeight) {
 		echo 'resizing';
 		
@@ -99,6 +100,20 @@ class ImageManipulator {
       $move_y = ($move == "y") ? ($iHeight - $iNewHeight) / 2 : 0;
 //      $move_x = 0;
 //      $move_y = 0;
+=======
+	public function resize($sWidth, $sHeight) {
+		echo 'resizing';
+		
+		$iWidth = $this->_iWidth * $this->_iWidthRatio;
+		$iHeight = $this->_iHeight * $this->_iHeightRatio;
+		
+		
+
+		      $move_x = ($move == "x") ? ($max_x-$new_x)/2 : 0;
+      $move_y = ($move == "y") ? ($max_y-$new_y)/2 : 0;
+      $move_x = 0;
+      $move_y = 0;
+>>>>>>> eab71864be308d7d1a31dbc0386eaf40b52a7277
 		
 		
 		$rImage = imagecreatetruecolor($iWidth, $iHeight);
@@ -109,9 +124,15 @@ class ImageManipulator {
 		
 //		$this->_saveToFile($rImage, dirname(__FILE__).'/result.jpg');
 //		$this->_saveToFile('result.jpg', $rImage);
+<<<<<<< HEAD
 		$this->_sName = dirname(__FILE__).'/image.jpg';
 
 		$sNewimage = dirname(__FILE__).'/image.jpg';
+=======
+//		$this->_sName = dirname(__FILE__).'/image.jpg';
+
+		echo $sNewimage = dirname(__FILE__).'/image.jpg';
+>>>>>>> eab71864be308d7d1a31dbc0386eaf40b52a7277
 		
 		imagejpeg($rImage, $sNewimage);
 		//imagejpeg(dirname(__FILE__).'/iamge.jpg', null, 100);
@@ -119,8 +140,12 @@ class ImageManipulator {
 	}
 	
 	public function show($img) {
+<<<<<<< HEAD
 		//return '<img src="'.basename($this->_sName).'" />';
 		echo '<img src="'.basename($this->_sName).'" />';
+=======
+		return '<img src="'.basename($this->_sName).'" />';
+>>>>>>> eab71864be308d7d1a31dbc0386eaf40b52a7277
 	}
 	
 	protected function _saveToFile($save_image, $new_image) {
