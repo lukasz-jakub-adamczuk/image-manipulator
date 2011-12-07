@@ -56,103 +56,101 @@ class ImageManipulator {
 		} else {
 			$this->_sOrientation = 'square';
 		}
-		
-		
 
-		
-	if($image_x > $image_y) // Landscape
-   {
-      $ratio_x = ($image_x > $max_x) ? $max_x/$image_x : 1;
-      $ratio_y = $ratio_x;
-      $move = 'y';
-   }
-   else // Portrait
-   {
-      $ratio_y = ($image_y > $max_y) ? $max_y/$image_y : 1;
-      $ratio_x = $ratio_y;
-      $move = 'x';
-   }
-		
 	}
 	
-<<<<<<< HEAD
-	public function resize($iWidth, $iHeight) {
-		echo 'resizing';
-		
+	public function resize($iWidth, $iHeight, $bMargins = true, $sHorCrop = 'center', $sVerCrop = 'center') {
+		// check image orientation
 		if ($this->_sOrientation == 'landscape') {
-			$this->_iWidthRatio = ($this->_iWidth > $iWidth) ? $iWidth / $this->_iWidth : 1;
-			$this->_iHeightRatio = $this->_iWidthRatio;
-			$move = 'y';
+			if ($bMargins) {
+				$this->_iWidthRatio = ($this->_iWidth > $iWidth) ? $iWidth / $this->_iWidth : 1;
+				$this->_iHeightRatio = $this->_iWidthRatio;
+				$sMove = 'y';
+			} else {
+				$this->_iHeightRatio = ($this->_iHeight > $iHeight) ? $iHeight / $this->_iHeight : 1;
+				$this->_iWidthRatio = $this->_iHeightRatio;
+				$sMove = 'x';
+			}
 		} elseif ($this->_sOrientation == 'portrait') {
-			$this->_iHeightRatio = ($this->_iHeight > $iHeight) ? $iHeight / $this->_iHeight : 1;
-			$this->_iWidthRatio = $this->_iHeightRatio;
-			$move = 'x';
+			if ($bMargins) {
+				$this->_iHeightRatio = ($this->_iHeight > $iHeight) ? $iHeight / $this->_iHeight : 1;
+				$this->_iWidthRatio = $this->_iHeightRatio;
+				$sMove = 'x';
+			} else {
+				$this->_iWidthRatio = ($this->_iWidth > $iWidth) ? $iWidth / $this->_iWidth : 1;
+				$this->_iHeightRatio = $this->_iWidthRatio;
+				$sMove = 'y';
+			}
 		} else {
-			echo 'BOTH';
+			if ($iWidth > $iHeight) {
+//				$this->_iWidthRatio = $this->_iHeightRatio = $iWidth / $this->_iWidth;
+				$this->_iWidthRatio = $this->_iHeightRatio = $iHeight / $this->_iHeight;
+				$sMove = 'x';
+			} else {
+//				$this->_iWidthRatio = $this->_iHeightRatio = $iHeight / $this->_iHeight;
+$this->_iWidthRatio = $this->_iHeightRatio = $iWidth / $this->_iWidth;
+				$sMove = 'y';
+			}
 		}
 		
 		$iNewWidth = $this->_iWidth * $this->_iWidthRatio;
 		$iNewHeight = $this->_iHeight * $this->_iHeightRatio;
 		
+//		echo '$iNewWidth'. $iNewWidth.'<br />';
+//		echo '$iNewHeight'. $iNewHeight.'<br />';
 		
+		if ($sHorCrop == 'left') {
+			$sMoveWidth = 0;
+		} elseif ($sHorCrop == 'center') {
+			$sMoveWidth = ($sMove == "x") ? ($iWidth - $iNewWidth) / 2 : 0;
+		} else {
+			$sMoveWidth = ($sMove == "x") ? ($iWidth - $iNewWidth) : 0;
+		}
 
-      $move_x = ($move == "x") ? ($iWidth - $iNewWidth) / 2 : 0;
-      $move_y = ($move == "y") ? ($iHeight - $iNewHeight) / 2 : 0;
-//      $move_x = 0;
-//      $move_y = 0;
-=======
-	public function resize($sWidth, $sHeight) {
-		echo 'resizing';
-		
-		$iWidth = $this->_iWidth * $this->_iWidthRatio;
-		$iHeight = $this->_iHeight * $this->_iHeightRatio;
-		
-		
-
-		      $move_x = ($move == "x") ? ($max_x-$new_x)/2 : 0;
-      $move_y = ($move == "y") ? ($max_y-$new_y)/2 : 0;
-      $move_x = 0;
-      $move_y = 0;
->>>>>>> eab71864be308d7d1a31dbc0386eaf40b52a7277
-		
-		
+		if ($sVerCrop == 'top') {
+			$sMoveHeight = 0;
+		} elseif ($sVerCrop == 'center') {
+			$sMoveHeight = ($sMove == "y") ? ($iHeight - $iNewHeight) / 2 : 0;
+		} else {
+			$sMoveHeight = ($sMove == "y") ? ($iHeight - $iNewHeight) : 0;
+		}
+				
 		$rImage = imagecreatetruecolor($iWidth, $iHeight);
 		$rBackground = imagecolorallocate($rImage, 255, 255, 255);
 		
 		imagefill($rImage, 0, 0, $rBackground);
-		imagecopyresampled($rImage, $this->_rImage, $move_x, $move_y, 0, 0, $iWidth, $iHeight, $this->_iWidth, $this->_iHeight);
+		imagecopyresampled($rImage, $this->_rImage, $sMoveWidth, $sMoveHeight, 0, 0, $iNewWidth, $iNewHeight, $this->_iWidth, $this->_iHeight);
 		
-//		$this->_saveToFile($rImage, dirname(__FILE__).'/result.jpg');
-//		$this->_saveToFile('result.jpg', $rImage);
-<<<<<<< HEAD
-		$this->_sName = dirname(__FILE__).'/image.jpg';
-
-		$sNewimage = dirname(__FILE__).'/image.jpg';
-=======
-//		$this->_sName = dirname(__FILE__).'/image.jpg';
-
-		echo $sNewimage = dirname(__FILE__).'/image.jpg';
->>>>>>> eab71864be308d7d1a31dbc0386eaf40b52a7277
+		$this->_sName = dirname(__FILE__).'/image-'.$iWidth.'-'.$iHeight.'.jpg';
+		$this->_rImage = $rImage;
 		
-		imagejpeg($rImage, $sNewimage);
-		//imagejpeg(dirname(__FILE__).'/iamge.jpg', null, 100);
-		
+		imagejpeg($rImage, $this->_sName);
 	}
 	
-	public function show($img) {
-<<<<<<< HEAD
+	public function show() {
 		//return '<img src="'.basename($this->_sName).'" />';
-		echo '<img src="'.basename($this->_sName).'" />';
-=======
-		return '<img src="'.basename($this->_sName).'" />';
->>>>>>> eab71864be308d7d1a31dbc0386eaf40b52a7277
+		echo '<img src="'.basename($this->_sName).'" style="border: 1px solid #aaa; margin: 5px;" />';
+	}
+	
+	public function debug() {
+		echo '<pre>';
+		echo 'img width :      '.$this->_iWidth."\n"
+			.'img height:      '.$this->_iHeight."\n"
+			.'img ratio width: '.$this->_iWidthRatio."\n"
+			.'img ratio height:'.$this->_iHeightRatio."\n"
+			.'</pre>';
+	}
+	
+	public function save($sFile) {
+		$sFile = isset($sFile) ? $sFile : $this->_sName;
+		imagejpeg($this->_rImage, $sFile);
 	}
 	
 	protected function _saveToFile($save_image, $new_image) {
 		if($this->imgType($save_image) == "IMAGETYPE_JPEG")
       {
       	if (
-         imagejpeg($new_img, $save_image, 100)
+         imagejpeg($new_img, $save_image, 80)
          ) {
          	echo 'ok';
          } else {
