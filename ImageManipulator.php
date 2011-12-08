@@ -22,29 +22,21 @@ class ImageManipulator {
 		
 	}
 	
-	public function loadImage($source) {
+	public function loadImage($sImage) {
 		$this->_sName = $source;
 		
+		// checking image type
+		if ($this->imgType($sImage) == "IMAGETYPE_JPEG") {
+            $rImage = imagecreatefromjpeg($sImage);
+		} elseif ($this->imgType($sImage) == "IMAGETYPE_GIF") {
+            $rImage = imagecreatefromgif($sImage);
+		} elseif ($this->imgType($sImage) == "IMAGETYPE_PNG") {
+			$rImage = imagecreatefrompng($sImage);
+		} else {
+            die('Wrong filetype! Accepted images: JPG/JPEG, GIF, PNG');
+		}
 		
-		if($this->imgType($source) == "IMAGETYPE_JPEG")
-      {
-         $img_src = imagecreatefromjpeg($source);
-      }
-      elseif($this->imgType($source) == "IMAGETYPE_GIF")
-      {
-         $img_src = imagecreatefromgif($source);
-      }
-      elseif($this->imgType($source) == "IMAGETYPE_PNG")
-      {
-         $img_src = imagecreatefrompng($source);
-      }
-      else
-      {
-         die('Wrong filetype! Accepted images: JPG/JPEG, GIF, PNG');
-      }
-      
-
-		$this->_rImage = $img_src;
+		$this->_rImage = $rImage;
 		
 		$this->_iWidth = imagesx($this->_rImage);
 		$this->_iHeight = imagesy($this->_rImage);
@@ -56,20 +48,19 @@ class ImageManipulator {
 		} else {
 			$this->_sOrientation = 'square';
 		}
-
 	}
 	
 	public function resize($iWidth, $iHeight, $bMargins = true, $sHorCrop = 'center', $sVerCrop = 'center') {
 		// check image orientation
 		if ($this->_sOrientation == 'landscape') {
 			if ($bMargins) {
-				$this->_iWidthRatio = ($this->_iWidth > $iWidth) ? $iWidth / $this->_iWidth : 1;
-				$this->_iHeightRatio = $this->_iWidthRatio;
-				$sMove = 'y';
-			} else {
 				$this->_iHeightRatio = ($this->_iHeight > $iHeight) ? $iHeight / $this->_iHeight : 1;
 				$this->_iWidthRatio = $this->_iHeightRatio;
 				$sMove = 'x';
+			} else {
+				$this->_iWidthRatio = ($this->_iWidth > $iWidth) ? $iWidth / $this->_iWidth : 1;
+				$this->_iHeightRatio = $this->_iWidthRatio;
+				$sMove = 'y';
 			}
 		} elseif ($this->_sOrientation == 'portrait') {
 			if ($bMargins) {
@@ -82,13 +73,20 @@ class ImageManipulator {
 				$sMove = 'y';
 			}
 		} else {
+			// TODO check is it correct ?
 			if ($iWidth > $iHeight) {
-//				$this->_iWidthRatio = $this->_iHeightRatio = $iWidth / $this->_iWidth;
-				$this->_iWidthRatio = $this->_iHeightRatio = $iHeight / $this->_iHeight;
+				if ($bMargins) {
+					$this->_iWidthRatio = $this->_iHeightRatio = $iHeight / $this->_iHeight;
+				} else {
+					$this->_iWidthRatio = $this->_iHeightRatio = $iWidth / $this->_iWidth;
+				}
 				$sMove = 'x';
 			} else {
-//				$this->_iWidthRatio = $this->_iHeightRatio = $iHeight / $this->_iHeight;
-$this->_iWidthRatio = $this->_iHeightRatio = $iWidth / $this->_iWidth;
+				if ($bMargins) {
+					$this->_iWidthRatio = $this->_iHeightRatio = $iWidth / $this->_iWidth;
+				} else {
+					$this->_iWidthRatio = $this->_iHeightRatio = $iHeight / $this->_iHeight;
+				}
 				$sMove = 'y';
 			}
 		}
@@ -124,7 +122,7 @@ $this->_iWidthRatio = $this->_iHeightRatio = $iWidth / $this->_iWidth;
 		$this->_sName = dirname(__FILE__).'/image-'.$iWidth.'-'.$iHeight.'.jpg';
 		$this->_rImage = $rImage;
 		
-		imagejpeg($rImage, $this->_sName);
+		//imagejpeg($rImage, $this->_sName);
 	}
 	
 	public function show() {
@@ -143,43 +141,28 @@ $this->_iWidthRatio = $this->_iHeightRatio = $iWidth / $this->_iWidth;
 	
 	public function save($sFile) {
 		$sFile = isset($sFile) ? $sFile : $this->_sName;
+		// TODO save to another file also
 		imagejpeg($this->_rImage, $sFile);
 	}
 	
-	protected function _saveToFile($save_image, $new_image) {
-		if($this->imgType($save_image) == "IMAGETYPE_JPEG")
-      {
-      	if (
-         imagejpeg($new_img, $save_image, 80)
-         ) {
-         	echo 'ok';
-         } else {
-         	echo 'no';
-         }
-      }
-      elseif($this->imgType($save_image) == "IMAGETYPE_GIF")
-      {
-         imagegif($new_img, $save_image);
-      }
-      elseif($this->imgType($save_image) == "IMAGETYPE_PNG")
-      {
-         imagepng($new_img, $save_image);
-      }
+	protected function _saveToFile($rImage, $sImageName) {
+		// TODO better checking file type
+		if ($this->imgType($sImageName) == "IMAGETYPE_JPEG") {
+            imagejpeg($rImage, $sImageName, 80);
+		} elseif ($this->imgType($sImageName) == "IMAGETYPE_GIF") {
+            imagegif($rImage, $sImageName);
+		} elseif ($this->imgType($sImageName) == "IMAGETYPE_PNG") {
+			imagepng($rImage, $sImageName);
+		}
 	}
 	
-	function imgType($name)
-	{
-	   if(substr($name, -4, 4) == '.jpg' || substr($name, -4, 4) == 'jpeg')
-	   {
-	      return "IMAGETYPE_JPEG";
-	   }
-	   elseif(substr($name, -4, 4) == '.gif')
-	   {
-	      return "IMAGETYPE_GIF";
-	   }
-	   elseif(substr($name, -4, 4) == '.png')
-	   {
-	      return "IMAGETYPE_PNG";
-	   }
+	public function imgType($sImageName)	{
+	    if (substr($sImageName, -4, 4) == '.jpg' || substr($sImageName, -4, 4) == 'jpeg') {
+	        return "IMAGETYPE_JPEG";
+   		} elseif (substr($sImageName, -4, 4) == '.gif') {
+   			return "IMAGETYPE_GIF";
+   		} elseif (substr($sImageName, -4, 4) == '.png') {
+   			return "IMAGETYPE_PNG";
+   		}
 	}
 }
