@@ -23,7 +23,7 @@ class ImageManipulator {
 	}
 	
 	public function loadImage($sImage) {
-		$this->_sName = $source;
+		$this->_sName = $sImage;
 		
 		// checking image type
 		if ($this->imgType($sImage) == "IMAGETYPE_JPEG") {
@@ -101,16 +101,20 @@ class ImageManipulator {
 			$sMoveWidth = 0;
 		} elseif ($sHorCrop == 'center') {
 			$sMoveWidth = ($sMove == "x") ? ($iWidth - $iNewWidth) / 2 : 0;
-		} else {
+		} elseif ($sHorCrop == 'right') {
 			$sMoveWidth = ($sMove == "x") ? ($iWidth - $iNewWidth) : 0;
+		} elseif (strpos($sHorCrop, '%') !== false) {
+    		$sMoveWidth = ($sMove == "x") ? ($iWidth - $iNewWidth) * ((int)str_replace('%', '', $sHorCrop) / 100) : 0;
 		}
 
 		if ($sVerCrop == 'top') {
 			$sMoveHeight = 0;
 		} elseif ($sVerCrop == 'center') {
 			$sMoveHeight = ($sMove == "y") ? ($iHeight - $iNewHeight) / 2 : 0;
-		} else {
+		} elseif ($sVerCrop == 'bottom') {
 			$sMoveHeight = ($sMove == "y") ? ($iHeight - $iNewHeight) : 0;
+		} elseif (strpos($sVerCrop, '%') !== false) {
+    		$sMoveHeight = ($sMove == "y") ? ($iHeight - $iNewHeight) * ((int)str_replace('%', '', $sVerCrop) / 100) : 0;
 		}
 				
 		$rImage = imagecreatetruecolor($iWidth, $iHeight);
