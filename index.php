@@ -12,11 +12,21 @@ define('APP_DIR', dirname(__FILE__));
 
 $sPath = isset($_GET['path']) ? $_GET['path'] : '';
 
+$sDir = APP_DIR.'/../goToNepal/media/photos/';
+// echo $sDir;
 
+$aContent = dir_content($sDir.$sPath);
 
-$aContent = dir_content(APP_DIR.'/../ola/ola-prace/'.$sPath);
+// print_r($aContent);
+// var_dump($aContent);
+
+$aImages = $aContent;
 
 sort($aImages);
+
+unset($aImages[0]);
+
+// print_r($aImages);
 
 /*
 print_r($aImages);
@@ -42,8 +52,8 @@ $sFile = isset($_GET['path']) ? APP_DIR.'/../ola/ola-prace/'.$_GET['path'] : APP
 $iWidth = isset($_POST['image']['width']) ? (int)$_POST['image']['width'] : 160;
 $iHeight = isset($_POST['image']['height']) ? (int)$_POST['image']['height'] : 120;
 
-//$bMargins = isset($_POST['image']['margins']) ? (int)$_POST['image']['margins'] : 120;
-$bMargins = (int)$_POST['image']['margins'];
+$bMargins = isset($_POST['image']['margins']) ? (int)$_POST['image']['margins'] : 120;
+// $bMargins = (int)$_POST['image']['margins'];
 
 $sHorCrop = isset($_POST['image']['width_crop']) ? (int)$_POST['image']['width_crop'].'%' : 'center';
 $sVerCrop = isset($_POST['image']['height_crop']) ? (int)$_POST['image']['height_crop'].'%' : 'center';
@@ -53,6 +63,15 @@ $sScaledHeight = 480;
 
 $sSourceImage = '<img src="'.basename($sFile).'" width="'.$sScaledWidth.'" height="'.$sScaledHeight.'" />';
 
+
+$sImg = 'WP_20130924_007.jpg';
+
+$sFile = dirname(__DIR__) . '/goToNepal/media/photos/' . $sImg;
+// $sFile = 'http://localhost/~ash/image-manipulator/'.'wall-1.jpg';
+
+echo $sFile;
+
+
 //if (isset($_POST['image'])) {
     require_once APP_DIR.'/ImageManipulator.php';
 
@@ -61,28 +80,28 @@ $sSourceImage = '<img src="'.basename($sFile).'" width="'.$sScaledWidth.'" heigh
     $oImageManipulator->loadImage($sFile);
 
     //$oImageManipulator->resize(320, 200, false, 'center', 'top');
-    $oImageManipulator->resize($iWidth, $iHeight, $bMargins, $sHorCrop, $sVerCrop);
+    // $oImageManipulator->resize($iWidth, $iHeight, $bMargins, $sHorCrop, $sVerCrop);
     //$oImageManipulator->resize(320, 200, false, 'center', 'top');
     
     //$oImageManipulator->resize(200, 500, true, '10%', 'top');
 
     //$oImageManipulator->resize(600, 960);
-    //$oImageManipulator->resize(960, 600);
-    //$oImageManipulator->resize(600, 600);
-    $oImageManipulator->show();
+    // $oImageManipulator->resize(960, 600);
+    // $oImageManipulator->resize(600, 600);
+    // $oImageManipulator->show();
     
     
-    $sNewFile = APP_DIR.'/../ola/img/thumbs/'.(isset($_GET['image']['file']) ? $_GET['image']['file'] : 'result.jpg');
-
-    $oImageManipulator->save($_GET['file']);
+    $sNewFile = APP_DIR.'/tmp/'.(isset($_GET['image']['file']) ? $_GET['image']['file'] : 'result.jpg');
+    // $oImageManipulator->save($_GET['file']);
+    $oImageManipulator->save($sNewFile);
 //}
 
 
 //$oImageManipulator->resize(300, 300);
 //$oImageManipulator->show();
 //
-//$oImageManipulator->resize(100, 300);
-//$oImageManipulator->show();
+// $oImageManipulator->resize(100, 300);
+// $oImageManipulator->show();
 
 //$oImageManipulator->debug();
 
@@ -112,7 +131,7 @@ $sSourceImage = '<img src="'.basename($sFile).'" width="'.$sScaledWidth.'" heigh
 
 // echo szablonu
 
-require_once APP_DIR.'/index.html';
+// require_once APP_DIR.'/index.html';
 
 
 
