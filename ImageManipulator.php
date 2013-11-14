@@ -123,14 +123,14 @@ class ImageManipulator {
 		imagefill($rImage, 0, 0, $rBackground);
 		imagecopyresampled($rImage, $this->_rImage, $sMoveWidth, $sMoveHeight, 0, 0, $iNewWidth, $iNewHeight, $this->_iWidth, $this->_iHeight);
 		
-		$this->_sName = dirname(__FILE__).'/image-'.$iWidth.'-'.$iHeight.'.jpg';
+		$this->_sName = dirname(__FILE__).'/tmp/img-'.$iWidth.'-'.$iHeight.'.jpg';
 		$this->_rImage = $rImage;
 		
-		//imagejpeg($rImage, $this->_sName);
+		// imagejpeg($rImage, $this->_sName);
 	}
 	
 	public function show() {
-		//return '<img src="'.basename($this->_sName).'" />';
+		// return '<img src="'.basename($this->_sName).'" />';
 		echo '<img src="'.basename($this->_sName).'" style="border: 1px solid #aaa; margin: 5px;" />';
 	}
 	
