@@ -7,55 +7,26 @@ ini_set('show_errors', 1);
 
 define('APP_DIR', dirname(__FILE__));
 
+// require_once APP_DIR.'/ImageManipulator.php';
+require_once APP_DIR.'/image.php';
 
-$sDir = APP_DIR.'/../goToNepal/media/photos/';
+$sDir = APP_DIR.'/../goToNepal/media/photos/people/';
 
+//$sImageName = 'WP_20130926_021.jpg';
+$sImageName = 'katarzyna-merchata.jpg';
 
-$sImg = 'WP_20130924_007.jpg';
+$sFile = $sDir . $sImageName;
 
-$sFile = dirname(__DIR__) . '/goToNepal/media/photos/' . $sImg;
+$aParams = array();
+$aParams['path'] = $sFile;
+// $aParams['width'] = 320;
+// $aParams['height'] = 240;
 
-// echo $sFile;
+$aParams['width'] = 120;
+$aParams['height'] = 120;
+$aParams['margins'] = isset($_GET['margins']) ? strip_tags($_GET['margins']) : true;
 
-$iWidth = 320;
-$iHeight = 240;
-
-$sNewFile = APP_DIR.'/tmp/img-'.$iWidth.'-'.$iHeight.'.jpg';
-
-// echo $sNewFile;
-
-if (file_exists($sNewFile)) {
-	echo 'file exists';
-} else {
-	echo 'file does not exists';
-	// require_once APP_DIR.'/ImageManipulator.php';
-
-	// $oImageManipulator = new ImageManipulator();
-
-	// $oImageManipulator->loadImage($sFile);
-
-	// $oImageManipulator->resize($iWidth, $iHeight);
-
-	// $oImageManipulator->resize(320, 200, false, 'center', 'top');
-	//$oImageManipulator->resize(320, 200, false, 'center', 'top');
-	// $oImageManipulator->resize(200, 500, true, '10%', 'top');
-	// $oImageManipulator->resize($iWidth, $iHeight, $bMargins, $sHorCrop, $sVerCrop);
-
-	// $oImageManipulator->resize(600, 960);
-	// $oImageManipulator->resize(960, 600);
-	// $oImageManipulator->resize(120, 90);
-	// $oImageManipulator->show();
-
-
-	// $sNewFile = APP_DIR.'/tmp/result.jpg';
-
-	// $oImageManipulator->save($sNewFile);
-}
-
-echo '<img src="tmp/img-'.$iWidth.'-'.$iHeight.'.jpg" />';
-echo '<br>';
-
-// echo '<img src="tmp/result.jpg" />';
+echo '<img src="'.getImageUrl($sImageName, $aParams).'" />';
 
 $total = microtime(true) - $start;
-echo (int)($total * 1000).'ms';
+echo 'index.php: '.(int)($total * 1000).'ms';
